@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./mix.css";
+import apiURL from "../Config";
 
 const Register = () => {
+  const nevigate = useNavigate();
+  const api = apiURL.url;
   const [sendData, setSendData] = useState({
     name: "",
     email: "",
     password: "",
     cpassword: "",
-    role: ""
+    role: "customer"
   });
 
   const changeData = (e) => {
@@ -19,19 +22,40 @@ const Register = () => {
   };
   console.log(sendData);
 
-
-  const submitToRegister=async(e)=>{
+  const submitToRegister = async (e) => {
     e.preventDefault();
 
-    const {name, emial, password, cpassword}=sendData;
-    if(!name || !emial || !password || !cpassword){
-      alert("Enter all fields")
-    }else if(!email.include("@")){
-      alert("Enter valid email")
-    }else if(password.length<6 || cpassword<6 || password!==cpassword){
-      
+    const { name, email, password, cpassword } = sendData;
+    if (!name || !email || !password || !cpassword) {
+      alert("Enter all fields");
+    } else if (!email.includes("@")) {
+      alert("Enter valid email");
+    } else if (password.length < 6 || cpassword < 6) {
+      alert("Password should be at least 6 characters long");
+    } else if (password !== cpassword) {
+      alert("Please Enter  the same Password and Confirm Password");
+    } else {
+      console.log("reg");
+
+      const data = await fetch(`${api}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(sendData)
+      });
+      const res = await data.json();
+      // console.log(res);
+      if (res.status === 201) {
+        alert("Email Already Registered");
+        nevigate("/");
+        console.log(res);
+      } else if (res.status === 202) {
+        console.log(res);
+        nevigate("/");
+      }
     }
-  }
+  };
 
   return (
     <div className="reg">
@@ -84,7 +108,21 @@ const Register = () => {
           />
         </div>
         <div className="form">
-          <button>Register</button>
+          <label htmlFor="staff">Staff</label>
+          <input
+            type="checkbox"
+            name="role"
+            checked={sendData.role === "staff"}
+            onChange={() => {
+              setSendData({
+                ...sendData,
+                role: sendData.role === "customer" ? "staff" : "customer"
+              });
+            }}
+          />
+        </div>
+        <div className="form">
+          <button onClick={submitToRegister}>Register</button>
         </div>
         <div className="form">
           <p>

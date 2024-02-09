@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,6 +21,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  role: {
+    type: String,
+    required: true
+  },
   tokens: [
     {
       token: {
@@ -28,6 +33,18 @@ const userSchema = new mongoose.Schema({
       }
     }
   ]
+});
+
+//hash password
+userSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (user.isModified("password")) {
+    this.password = await bcrypt.hash(user.password, 10);
+    this.cpassword = await bcrypt.hash(user.cpassword, 10);
+  }
+
+  next();
 });
 
 const userdb = mongoose.model("users", userSchema);
