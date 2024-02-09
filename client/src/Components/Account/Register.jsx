@@ -19,6 +19,20 @@ const Register = () => {
   };
   console.log(sendData);
 
+
+  const submitToRegister=async(e)=>{
+    e.preventDefault();
+
+    const {name, emial, password, cpassword}=sendData;
+    if(!name || !emial || !password || !cpassword){
+      alert("Enter all fields")
+    }else if(!email.include("@")){
+      alert("Enter valid email")
+    }else if(password.length<6 || cpassword<6 || password!==cpassword){
+      
+    }
+  }
+
   return (
     <div className="reg">
       <div className="regContainer">
@@ -28,22 +42,46 @@ const Register = () => {
         <div className="form">
           <label htmlFor="name">Name</label>
           <br />
-          <input type="text" placeholder="Enter your name" />
+          <input
+            type="text"
+            name="name"
+            value={sendData.name}
+            onChange={changeData}
+            placeholder="Enter your name"
+          />
         </div>
         <div className="form">
           <label htmlFor="email">Email</label>
           <br />
-          <input type="email" placeholder="Enter your email" />
+          <input
+            type="email"
+            name="email"
+            value={sendData.email}
+            onChange={changeData}
+            placeholder="Enter your email"
+          />
         </div>
         <div className="form">
           <label htmlFor="password">Password</label>
           <br />
-          <input type="password" placeholder="Enter password" />
+          <input
+            type="password"
+            name="password"
+            value={sendData.password}
+            onChange={changeData}
+            placeholder="Enter password"
+          />
         </div>
         <div className="form">
           <label htmlFor="cpassword">Confirm Password</label>
           <br />
-          <input type="password" placeholder="Enter confirm password" />
+          <input
+            type="password"
+            name="cpassword"
+            value={sendData.cpassword}
+            onChange={changeData}
+            placeholder="Enter confirm password"
+          />
         </div>
         <div className="form">
           <button>Register</button>
