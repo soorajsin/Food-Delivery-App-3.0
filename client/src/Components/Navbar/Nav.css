@@ -20,13 +20,13 @@
   cursor: pointer;
   font-size: 30px;
   transition: 0.3s ease;
+  position: relative;
 }
 
 .nav .navCon .tab .navTab {
   text-decoration: none;
   color: #fff;
   cursor: pointer;
-  position: relative;
 }
 
 .nav .navCon .tab .navTab:hover {
@@ -38,7 +38,7 @@
   height: 65px;
 }
 
-.nav .navCon .tab .navTab .avatar {
+.nav .navCon .tab .avatar {
   width: 300px;
   background-color: #fff;
   border-radius: 10px;
@@ -48,22 +48,22 @@
   display: none;
 }
 
-.nav .navCon .tab .navTab:hover .avatar {
+.nav .navCon .tab:hover .avatar {
   display: block;
 }
-.nav .navCon .tab .navTab .avatar .avatab {
+.nav .navCon .tab .avatar .avatab {
   margin-bottom: 20px;
   border-radius: 10px;
   padding: 10px;
   background-color: #f5f5f5;
 }
-.nav .navCon .tab .navTab .avatar .avatab .avatabNav {
+.nav .navCon .tab .avatar .avatab .avatabNav {
   text-decoration: none;
   color: black;
   cursor: pointer;
 }
 
-.nav .navCon .tab .navTab .avatar .avatab:hover {
+.nav .navCon .tab .avatar .avatab:hover {
   color: #fff;
   background-color: rgba(49, 30, 30, 0.425);
 }

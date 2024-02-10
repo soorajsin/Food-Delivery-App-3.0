@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppBar, Avatar, Toolbar } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import "./Nav.css";
+import apiURL from "../Config";
 
 const Nav = () => {
+  const api = apiURL.url;
+  // console.log(api);
+  const navAuth = async () => {
+    try {
+      const token = await localStorage.getItem("token");
+      // console.log(token);
+      const data = await fetch(`${api}/validator`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        }
+      });
+      const res = await data.json();
+      // console.log(res);
+      if (res.status === 201) {
+        console.log(res);
+      } else if (res.status === 202) {
+        console.log("user not authorised");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    navAuth();
+  });
   return (
     <AppBar>
       <Toolbar>
@@ -46,37 +74,37 @@ const Nav = () => {
             <div className="tab">
               <NavLink className={"navTab"}>
                 <Avatar></Avatar>
-                <div className="avatar">
-                  <div className="avaCon">
-                    <div className="avatab">
-                      <NavLink className={"avatabNav"}>Email</NavLink>
-                    </div>
-                    <div className="avatab">
-                      <NavLink to={"/home"} className={"avatabNav"}>
-                        Home
-                      </NavLink>
-                    </div>
-                    <div className="avatab">
-                      <NavLink to={"/shopping"} className={"avatabNav"}>
-                        Shopping
-                      </NavLink>
-                    </div>
-                    <div className="avatab">
-                      <NavLink to={"/management"} className={"avatabNav"}>
-                        Management
-                      </NavLink>
-                    </div>
-                    <div className="avatab">
-                      <NavLink to={"/track"} className={"avatabNav"}>
-                        Track
-                      </NavLink>
-                    </div>
-                    <div className="avatab">
-                      <NavLink className={"avatabNav"}>Log Out</NavLink>
-                    </div>
+              </NavLink>
+              <div className="avatar">
+                <div className="avaCon">
+                  <div className="avatab">
+                    <NavLink className={"avatabNav"}>Email</NavLink>
+                  </div>
+                  <div className="avatab">
+                    <NavLink to={"/home"} className={"avatabNav"}>
+                      Home
+                    </NavLink>
+                  </div>
+                  <div className="avatab">
+                    <NavLink to={"/shopping"} className={"avatabNav"}>
+                      Shopping
+                    </NavLink>
+                  </div>
+                  <div className="avatab">
+                    <NavLink to={"/management"} className={"avatabNav"}>
+                      Management
+                    </NavLink>
+                  </div>
+                  <div className="avatab">
+                    <NavLink to={"/track"} className={"avatabNav"}>
+                      Track
+                    </NavLink>
+                  </div>
+                  <div className="avatab">
+                    <NavLink className={"avatabNav"}>Log Out</NavLink>
                   </div>
                 </div>
-              </NavLink>
+              </div>
             </div>
           </div>
         </div>
