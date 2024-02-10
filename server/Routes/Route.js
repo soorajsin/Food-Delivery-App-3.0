@@ -149,11 +149,35 @@ router.post("/signOut", authentication, async (req, res) => {
 
 router.post("/addFoodItem", async (req, res) => {
   try {
-    console.log(req.body);
+    const { sendData } = req.body;
+    if (!sendData) {
+      return res.status(400).json({
+        msg: "Please provide data for food item"
+      });
+    }
+
+    const addedItems = await Promise.all(
+      sendData.map(async (item) => {
+        const newFoodItem = new FoodItem({
+          fname: item.fname,
+          fimg: item.fimg,
+          fprice: item.fprice, // Assuming item.fprice is already a number
+          fdec: item.fdec
+        });
+        return await newFoodItem.save();
+      })
+    );
+
+    res.status(201).json({
+      msg: "Added food successfully done",
+      status: 201,
+      data: addedItems
+    });
   } catch (error) {
-    res.status(400).json({
+    console.error("Error while adding food items:", error);
+    res.status(500).json({
       msg: "Failed to add food",
-      error: error
+      error: error.message
     });
   }
 });

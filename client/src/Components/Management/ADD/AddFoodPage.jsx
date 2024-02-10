@@ -40,7 +40,7 @@ const AddFoodPage = () => {
             "Content-Type": "application/json",
             Authorization: token
           },
-          body: JSON.stringify(sendData)
+          body: JSON.stringify({sendData})
         });
         const res = await data.json();
         console.log(res);
