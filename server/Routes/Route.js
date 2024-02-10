@@ -104,13 +104,13 @@ router.get("/validator", authentication, async (req, res) => {
   try {
     // console.log("auth");
     if (req.getData) {
-      res.status(400).json({
+      res.status(201).json({
         msg: "User authorised",
         status: 201,
         data: req.getData
       });
     } else {
-      res.status(400).json({
+      res.status(201).json({
         msg: "user not authorised",
         status: 202
       });

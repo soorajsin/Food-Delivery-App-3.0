@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppBar, Avatar, Toolbar } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import "./Nav.css";
 import apiURL from "../Config";
 
 const Nav = () => {
+  const [userData, setUserData] = useState();
+  console.log(userData.data);
   const api = apiURL.url;
   // console.log(api);
-  const navAuth = async () => {
+  const navAuth = useCallback(async () => {
     try {
       const token = await localStorage.getItem("token");
       // console.log(token);
@@ -22,16 +24,18 @@ const Nav = () => {
       // console.log(res);
       if (res.status === 201) {
         // console.log(res);
+        setUserData(res);
       } else if (res.status === 202) {
         console.log("user not authorised");
       }
     } catch (error) {
-      console.log(error);
+      console.log("navAuth problem ", error);
     }
-  };
+  }, [api]);
   useEffect(() => {
     navAuth();
-  });
+  }, [navAuth]);
+  
   return (
     <AppBar>
       <Toolbar>

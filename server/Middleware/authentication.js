@@ -7,14 +7,14 @@ const authentication = async (req, res, next) => {
     const token = await req.headers.authorization;
     // console.log(token);
     if (!token) {
-      res.status(400).json({
+      res.status(401).json({
         msg: "token not found"
       });
     } else {
       const tokenVerify = await jwt.verify(token, keysecret);
       //   console.log(tokenVerify);
       if (!tokenVerify) {
-        res.status(400).json({
+        res.status(403).json({
           msg: "Token not verified"
         });
       } else {
