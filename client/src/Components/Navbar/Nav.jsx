@@ -35,7 +35,7 @@ const Nav = () => {
   useEffect(() => {
     navAuth();
   }, [navAuth]);
-  
+
   return (
     <AppBar>
       <Toolbar>
