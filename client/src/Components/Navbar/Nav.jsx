@@ -21,7 +21,7 @@ const Nav = () => {
       const res = await data.json();
       // console.log(res);
       if (res.status === 201) {
-        console.log(res);
+        // console.log(res);
       } else if (res.status === 202) {
         console.log("user not authorised");
       }
