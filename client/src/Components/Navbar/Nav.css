@@ -38,6 +38,12 @@
   height: 65px;
 }
 
+.nav .navCon .tab .navTab .avatarIcon {
+  font-size: 30px;
+  color: red;
+  background-color: #fff;
+}
+
 .nav .navCon .tab .avatar {
   width: 300px;
   background-color: #fff;

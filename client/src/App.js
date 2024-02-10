@@ -6,6 +6,7 @@ import Nav from "./Components/Navbar/Nav";
 import HomePage from "./Components/Home/HomePage";
 import ManagementPage from "./Components/Management/ManagementPage";
 import TrackPage from "./Components/Management/Track/TrackPage";
+import AddFoodPage from "./Components/Management/ADD/AddFoodPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/management" element={<ManagementPage />} />
           <Route path="/track" element={<TrackPage />} />
+          <Route path="/add" element={<AddFoodPage/>}/>
         </Routes>
       </BrowserRouter>
     </>

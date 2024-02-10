@@ -123,4 +123,39 @@ router.get("/validator", authentication, async (req, res) => {
   }
 });
 
+router.post("/signOut", authentication, async (req, res) => {
+  try {
+    // console.log(req.body);
+    const user = req.getData;
+    if (!user) {
+      res.status(400).json({
+        msg: "user not found"
+      });
+    } else {
+      user.tokens = [];
+      const updatedUser = await user.save();
+      res.status(201).json({
+        status: 203,
+        msg: "Successfully log Out user",
+        data: updatedUser
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "User failed to log Out"
+    });
+  }
+});
+
+router.post("/addFoodItem", async (req, res) => {
+  try {
+    console.log(req.body);
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to add food",
+      error: error
+    });
+  }
+});
+
 module.exports = router;
