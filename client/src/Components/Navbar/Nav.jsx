@@ -1,40 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { AppBar, Avatar, Toolbar } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import "./Nav.css";
 import apiURL from "../Config";
 
 const Nav = () => {
-  const [userData, setUserData] = useState();
-  console.log(userData.data);
-  const api = apiURL.url;
-  // console.log(api);
-  const navAuth = useCallback(async () => {
+  const navAuth = async () => {
     try {
       const token = await localStorage.getItem("token");
-      // console.log(token);
-      const data = await fetch(`${api}/validator`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
-      });
-      const res = await data.json();
-      // console.log(res);
-      if (res.status === 201) {
-        // console.log(res);
-        setUserData(res);
-      } else if (res.status === 202) {
-        console.log("user not authorised");
-      }
+      console.log(token);
     } catch (error) {
-      console.log("navAuth problem ", error);
+      console.log(error);
     }
-  }, [api]);
-  useEffect(() => {
-    navAuth();
-  }, [navAuth]);
+  };
 
   return (
     <AppBar>
