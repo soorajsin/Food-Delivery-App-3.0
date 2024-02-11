@@ -10,6 +10,7 @@ import AddFoodPage from "./Components/Management/ADD/AddFoodPage";
 import UpdatePage from "./Components/Management/Update/UpdatePage";
 import ShoppingPage from "./Components/Home/Shopping/ShoppingPage";
 import BuyPage from "./Components/Home/Shopping/Buy/BuyPage";
+import ReplyPage from "./Components/Management/Track/Reply/ReplyPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/update/:addFoodItemId" element={<UpdatePage />} />
           <Route path="/shopping" element={<ShoppingPage />} />
           <Route path="/buyFood/:addToCartId" element={<BuyPage />} />
+          <Route path="/reply/:buyFoodId" element={<ReplyPage />} />
         </Routes>
       </BrowserRouter>
     </>

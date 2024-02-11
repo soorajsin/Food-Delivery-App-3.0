@@ -429,4 +429,56 @@ router.get("/fetchedToBuy", async (req, res) => {
   }
 });
 
+router.delete("/cancelFood", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { buyFoodId } = req.body;
+    if (!buyFoodId) {
+      res.status(400).json({
+        msg: "buyFoodId not found"
+      });
+    } else {
+      const user = await userdb.findOne({});
+      const index = user.buyFood.find(
+        (buyFood) => buyFood._id.toString() === buyFoodId
+      );
+      if (index === -1) {
+        res.status(400).json({
+          msg: "Invalid index"
+        });
+      } else {
+        user.buyFood.splice(index, 1);
+        const updatedUser = await user.save();
+        res.status(201).json({
+          msg: "successfully cancel food",
+          status: 209,
+          data: updatedUser
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "failed to cancel"
+    });
+  }
+});
+
+router.post("/reply", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { sendData } = req.body;
+    if (!sendData) {
+      res.status(400).json({
+        msg: "data not found"
+      });
+    }else{
+      
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to reply"
+    });
+  }
+});
+
 module.exports = router;

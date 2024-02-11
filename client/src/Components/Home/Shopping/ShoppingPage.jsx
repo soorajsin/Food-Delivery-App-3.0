@@ -48,6 +48,7 @@ const ShoppingPage = () => {
 
   useEffect(() => {
     fetched();
+    buyfetched();
   }, [fetched, buyfetched]);
 
   const deleteCart = async (addToCartId, index) => {
@@ -76,6 +77,28 @@ const ShoppingPage = () => {
 
   const buyFoodItem = async (addToCartId, index) => {
     histroy(`/buyFood/${addToCartId}`);
+  };
+
+  const cancelFood = async (buyFoodId, index) => {
+    try {
+      const data = await fetch(`${api}/cancelFood`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ buyFoodId })
+      });
+      const res = await data.json();
+      // console.log(res);
+      if (res.status === 209) {
+        console.log(res);
+        window.location.reload();
+      } else {
+        alert("Product not cancel");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -109,17 +132,30 @@ const ShoppingPage = () => {
             <h1>Welcome to Buy Food</h1>
           </div>
           <div className="show">
-            {userData
-              ? userData.data[0].map((buyFood, index) => (
+            {buy
+              ? buy.data[0].map((buyFood, index) => (
                   <div key={index} className="showData">
                     <img src={buyFood.fimg} alt="food img" />
                     <h2>{buyFood.fname}</h2>
                     <h3>{buyFood.fprice}</h3>
                     <p>{buyFood.fdec}</p>
                     <p>{buyFood.cname}</p>
+                    <p>{buyFood.cmobile}</p>
+                    <p>{buyFood.caddress}</p>
+                    <div className="actionCon">
+                      <>
+                        <i
+                          onClick={() => cancelFood(buyFood._id, index)}
+                          className="fa-solid fa-ban"
+                        ></i>
+                      </>
+                    </div>
                   </div>
                 ))
               : ""}
+          </div>
+          <div className="space">
+            <h1>Welcome to Reply [Time & Date]</h1>
           </div>
         </div>
       </div>
