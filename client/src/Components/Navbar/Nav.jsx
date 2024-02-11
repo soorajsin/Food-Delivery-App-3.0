@@ -8,7 +8,7 @@ const Nav = () => {
   const api = apiURL.url;
   const history = useNavigate();
   const [userData, setUserData] = useState();
-  console.log(userData);
+  // console.log(userData);
   const navAuth = useCallback(async () => {
     try {
       const token = await localStorage.getItem("token");

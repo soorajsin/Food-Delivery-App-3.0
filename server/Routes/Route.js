@@ -280,4 +280,41 @@ router.put("/updateFoodItem", async (req, res) => {
   }
 });
 
+router.post("/addToCart", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { addFoodItemId } = req.body;
+    if (!addFoodItemId) {
+      res.status(400).json({
+        msg: "addFoodItemId not found"
+      });
+    } else {
+      const user = await userdb.findOne({});
+      // console.log(user);
+      const index = user.addFoodItem.find(
+        (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+      );
+      if (index === -1) {
+        res.status(400).json({
+          msg: "index not found"
+        });
+      } else {
+        // console.log(index);
+        user.addToCart.push(index);
+        const updatedUser = await user.save();
+        res.status(201).json({
+          msg: "succesfully add to cart",
+          status: 206,
+          data: updatedUser
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to addToCart",
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
