@@ -280,7 +280,7 @@ router.put("/updateFoodItem", async (req, res) => {
   }
 });
 
-router.post("/addToCart", authentication, async (req, res) => {
+router.post("/addToCart", async (req, res) => {
   try {
     // console.log(req.body);
     const { addFoodItemId } = req.body;
@@ -289,7 +289,7 @@ router.post("/addToCart", authentication, async (req, res) => {
         msg: "addFoodItemId not found"
       });
     } else {
-      const user = req.getData;
+      const user = await userdb.findOne({});
       if (!user) {
         res.status(400).json({
           msg: "user not found"
@@ -303,6 +303,7 @@ router.post("/addToCart", authentication, async (req, res) => {
             msg: "Invalid id"
           });
         } else {
+          // console.log(entryFields);
           user.addToCart.push(entryFields);
 
           const updatedUser = await user.save();
@@ -313,26 +314,6 @@ router.post("/addToCart", authentication, async (req, res) => {
           });
         }
       }
-
-      // const user = await userdb.findOne({});
-      // console.log(user);
-      // const index = user.addFoodItem.find(
-      //   (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
-      // );
-      // if (index === -1) {
-      //   res.status(400).json({
-      //     msg: "index not found"
-      //   });
-      // } else {
-      //   // console.log(index);
-      //   user.addToCart.push(index);
-      //   const updatedUser = await user.save();
-      //   res.status(201).json({
-      //     msg: "succesfully add to cart",
-      //     status: 206,
-      //     data: updatedUser
-      //   });
-      // }
     }
   } catch (error) {
     res.status(400).json({
@@ -342,7 +323,25 @@ router.post("/addToCart", authentication, async (req, res) => {
   }
 });
 
-router.delete("/deleteToCart", authentication, async (req, res) => {
+router.get("/fetchedToCart", async (req, res) => {
+  try {
+    const fetched = await userdb.find({});
+    const addFood = fetched.map((user) => user.addToCart);
+    // console.log(addFood);
+    res.status(201).json({
+      msg: "fetched data",
+      status: 202,
+      data: addFood
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to fetched",
+      error: error
+    });
+  }
+});
+
+router.delete("/deleteToCart", async (req, res) => {
   try {
     // console.log(req.body);
     const { addToCartId } = req.body;
@@ -351,30 +350,26 @@ router.delete("/deleteToCart", authentication, async (req, res) => {
         msg: "not find addToCartId"
       });
     } else {
-      const user = req.getData;
-      if (!user) {
-        res.status(400).json({
-          msg: "user not found"
+      const user = await userdb.findOne({});
+      const index = user.addToCart.find(
+        (addToCart) => addToCart._id.toString() === addToCartId
+      );
+      if (index === -1) {
+        return res.status(404).json({
+          msg: "Food item not found"
         });
       } else {
-        const entryFields = user.addToCart.find(
-          (addToCart) => addToCart._id.toString() === addToCartId
-        );
-        if (!entryFields) {
-          res.status(400).json({
-            msg: "entry not found"
-          });
-        } else {
-          user.addToCart = user.addToCart.filter(
-            (addToCart) => addToCart._id.toString() !== addToCartId
-          );
-          const updatedUser = await user.save();
-          res.status(201).json({
-            msg: "delete",
-            status: 207,
-            data: updatedUser
-          });
-        }
+        // Remove the found food item from the array
+        user.addToCart.splice(index, 1);
+
+        // Save the updated user document
+        await user.save();
+
+        res.status(201).json({
+          msg: "Food item deleted successfully",
+          status: 207,
+          data: user
+        });
       }
     }
   } catch (error) {
@@ -383,7 +378,5 @@ router.delete("/deleteToCart", authentication, async (req, res) => {
     });
   }
 });
-
-
 
 module.exports = router;

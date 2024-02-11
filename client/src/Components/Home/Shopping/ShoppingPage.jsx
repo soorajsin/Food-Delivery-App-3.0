@@ -8,41 +8,36 @@ const ShoppingPage = () => {
   const histroy = useNavigate();
   const [userData, setUserData] = useState();
   // console.log(userData);
-  const navAuth = useCallback(async () => {
+  const fetched = useCallback(async () => {
     try {
-      const token = await localStorage.getItem("token");
-      // console.log(token);
-      const data = await fetch(`${api}/validator`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
+      const data = await fetch(`${api}/fetchedToCart`, {
+        method: "GET"
       });
       const res = await data.json();
       // console.log(res);
-      if (res.status === 201) {
-        // console.log(res);
+      if (res.status === 202) {
+        // console.log("cart", res);
         setUserData(res);
-      } else if (res.status === 202) {
-        console.log("user not authorized");
+      } else {
+        console.log("Not fetched data");
       }
     } catch (error) {
       console.log(error);
     }
   }, [api]);
+
   useEffect(() => {
-    navAuth();
-  }, [navAuth]);
+    fetched();
+  }, [fetched]);
 
   const deleteCart = async (addToCartId, index) => {
     try {
-      const token = await localStorage.getItem("token");
+      // const token = await localStorage.getItem("token");
       const data = await fetch(`${api}/deleteToCart`, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: token
+          "Content-Type": "application/json"
+          // Authorization: token
         },
         body: JSON.stringify({ addToCartId })
       });
@@ -68,7 +63,7 @@ const ShoppingPage = () => {
         <div className="magCon">
           <div className="show">
             {userData
-              ? userData.data.addToCart.map((addToCart, index) => (
+              ? userData.data[0].map((addToCart, index) => (
                   <div key={index} className="showData">
                     <img src={addToCart.fimg} alt="food img" />
                     <h2>{addToCart.fname}</h2>

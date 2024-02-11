@@ -31,12 +31,12 @@ const HomePage = () => {
 
   const addToCart = async (addFoodItemId, index) => {
     try {
-      const token = await localStorage.getItem("token");
+      // const token = await localStorage.getItem("token");
       const data = await fetch(`${api}/addToCart`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: token
+          "Content-Type": "application/json"
+          // Authorization: token
         },
         body: JSON.stringify({ addFoodItemId })
       });

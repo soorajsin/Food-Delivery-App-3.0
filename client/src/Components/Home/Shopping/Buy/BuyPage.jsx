@@ -30,20 +30,20 @@ const BuyPage = () => {
       if (res.status === 202) {
         console.log("update", res);
 
-        // const updateFood = await res.data[0].find(
-        //   (addToCart) => addToCart._id.toString() === addToCartId
-        // );
+        const updateFood = await res.data[0].find(
+          (addToCart) => addToCart._id.toString() === addToCartId
+        );
         // console.log("matched", updateFood);
-        // if (updateFood) {
-        //   setSendData({
-        //     fname: updateFood.fname,
-        //     fimg: updateFood.fimg,
-        //     fprice: updateFood.fprice,
-        //     fdec: updateFood.fdec
-        //   });
-        // } else {
-        //   console.log("not matched data");
-        // }
+        if (updateFood) {
+          setSendData({
+            fname: updateFood.fname,
+            fimg: updateFood.fimg,
+            fprice: updateFood.fprice,
+            fdec: updateFood.fdec
+          });
+        } else {
+          console.log("not matched data");
+        }
       } else {
         console.log("Not fetched data");
       }
@@ -55,6 +55,10 @@ const BuyPage = () => {
   useEffect(() => {
     fetched();
   }, [fetched]);
+
+  const productBuy = async () => {
+    const { cname, cmobile, caddress } = sendData;
+  };
 
   return (
     <div className="reg">
@@ -97,7 +101,7 @@ const BuyPage = () => {
           ></textarea>
         </div>
         <div className="form">
-          <button>Submit</button>
+          <button onClick={productBuy}>Submit</button>
         </div>
         <div className="form">
           <p>
