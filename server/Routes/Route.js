@@ -415,7 +415,7 @@ router.get("/fetchedToBuy", async (req, res) => {
   try {
     const fetched = await userdb.find({});
     const addFood = fetched.map((user) => user.buyFood);
-    console.log(addFood);
+    // console.log(addFood);
     res.status(201).json({
       msg: "fetched data",
       status: 203,
@@ -471,12 +471,103 @@ router.post("/reply", async (req, res) => {
       res.status(400).json({
         msg: "data not found"
       });
-    }else{
-      
+    } else {
+      const user = await userdb.findOne({});
+      if (!user) {
+        res.status(400).json({
+          msg: "user not found"
+        });
+      } else {
+        user.replyByManagement.push(sendData);
+        const updatedUser = await user.save();
+        res.status(201).json({
+          msg: "success to reply",
+          status: 206,
+          data: updatedUser
+        });
+      }
     }
   } catch (error) {
     res.status(400).json({
       msg: "Failed to reply"
+    });
+  }
+});
+
+router.get("/replyfetched", async (req, res) => {
+  try {
+    const fetched = await userdb.find({});
+    const addFood = fetched.map((user) => user.replyByManagement);
+    // console.log(addFood);
+    res.status(201).json({
+      msg: "fetched data",
+      status: 203,
+      data: addFood
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to fetched",
+      error: error
+    });
+  }
+});
+
+router.delete("/deletereply", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { replyByManagementId } = req.body;
+    if (!replyByManagementId) {
+      res.status(400).json({
+        msg: "not found reply"
+      });
+    } else {
+      const user = await userdb.findOne({});
+      if (!user) {
+        res.status(400).json({
+          msg: "user not found"
+        });
+      } else {
+        const index = user.replyByManagement.find(
+          (replyByManagement) =>
+            replyByManagement._id.toString() === replyByManagementId
+        );
+        if (!index) {
+          res.status(400).json({
+            msg: "Invalid index"
+          });
+        } else {
+          // console.log(index);
+          user.replyByManagement.splice(index, 1);
+          const updatedUser = await user.save();
+          res.status(201).json({
+            msg: "success to delte",
+            status: 204,
+            data: updatedUser
+          });
+        }
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to delete"
+    });
+  }
+});
+
+router.get("/fetchedreplyByManagementId", async (req, res) => {
+  try {
+    const fetched = await userdb.find({});
+    const addFood = fetched.map((user) => user.replyByManagement);
+    // console.log(addFood);
+    res.status(201).json({
+      msg: "fetched data",
+      status: 203,
+      data: addFood
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to fetched",
+      error: error
     });
   }
 });

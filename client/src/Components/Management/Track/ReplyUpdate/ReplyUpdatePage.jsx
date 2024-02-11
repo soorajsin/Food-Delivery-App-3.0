@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import apiURL from "../../../Config";
 
-const ReplyPage = () => {
+const ReplyUpdatePage = () => {
   const api = apiURL.url;
   const history = useNavigate();
-  const { buyFoodId } = useParams();
-  // console.log(buyFoodId);
+  const { replyByManagementId } = useParams();
+  // console.log(replyByManagementId);
   const [sendData, setSendData] = useState({
     dname: "",
     demail: "",
@@ -24,7 +24,7 @@ const ReplyPage = () => {
 
   const buyfetched = useCallback(async () => {
     try {
-      const data = await fetch(`${api}/fetchedToBuy`, {
+      const data = await fetch(`${api}/fetched/fetchedreplyByManagementId`, {
         method: "GET"
       });
       const res = await data.json();
@@ -32,9 +32,10 @@ const ReplyPage = () => {
       if (res.status === 203) {
         // console.log("buy", res);
         const checkId = await res.data[0].find(
-          (buyFood) => buyFood._id.toString() === buyFoodId
+          (replyByManagement) =>
+            replyByManagement._id.toString() === replyByManagementId
         );
-        // console.log("Checked ", checkId);
+        console.log("Checked ", checkId);
         if (checkId) {
           setSendData({
             fname: checkId.fname,
@@ -43,7 +44,11 @@ const ReplyPage = () => {
             fdec: checkId.fdec,
             cname: checkId.cname,
             cmobile: checkId.cmobile,
-            caddress: checkId.caddress
+            caddress: checkId.caddress,
+            dname: checkId.dname,
+            demail: checkId.demail,
+            dmobile: checkId.dmobile,
+            dtime: checkId.dtime
           });
         } else {
           console.log("invalid id");
@@ -54,7 +59,7 @@ const ReplyPage = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [api, buyFoodId]);
+  }, [api, replyByManagementId]);
 
   useEffect(() => {
     buyfetched();
@@ -76,14 +81,14 @@ const ReplyPage = () => {
           body: JSON.stringify({ sendData })
         });
         const res = await data.json();
-        // console.log(res);
-        if (res.status === 206) {
-          console.log(res);
-          history("/track");
-          window.location.reload();
-        } else {
-          console.log("not reply");
-        }
+        console.log(res);
+        // if (res.status === 206) {
+        //   console.log(res);
+        //   history("/track");
+        //   window.location.reload();
+        // } else {
+        //   console.log("not reply");
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -155,4 +160,4 @@ const ReplyPage = () => {
   );
 };
 
-export default ReplyPage;
+export default ReplyUpdatePage;

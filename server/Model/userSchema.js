@@ -61,6 +61,21 @@ const userSchema = new mongoose.Schema({
       cmobile: String,
       caddress: String
     }
+  ],
+  replyByManagement: [
+    {
+      fname: String,
+      fimg: String,
+      fprice: String,
+      fdec: String,
+      cname: String,
+      cmobile: String,
+      caddress: String,
+      dname: String,
+      demail: String,
+      dmobile: String,
+      dtime: String
+    }
   ]
 });
 
