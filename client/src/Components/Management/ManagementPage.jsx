@@ -35,6 +35,29 @@ const ManagementPage = () => {
     fetched();
   }, [fetched]);
 
+  const deleteFood = async (addFoodItemId, index) => {
+    try {
+      const token = await localStorage.getItem("token");
+      const data = await fetch(`${api}/deleteaddFoodItem`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        },
+        body: JSON.stringify({ addFoodItemId })
+      });
+      const res = await data.json();
+      // console.log(res);
+      if (res.status === 201) {
+        console.log(res);
+        window.location.reload();
+      } else {
+        alert("Not delete data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -53,7 +76,10 @@ const ManagementPage = () => {
                     <p>{addFoodItem.fdec}</p>
                     <div className="actionCon">
                       <>
-                        <i className="fa-solid fa-delete-left"></i>
+                        <i
+                          onClick={() => deleteFood(addFoodItem._id, index)}
+                          className="fa-solid fa-delete-left"
+                        ></i>
                         <i className="fa-solid fa-pen-nib"></i>
                       </>
                     </div>

@@ -199,4 +199,49 @@ router.get("/fetchedToAll", async (req, res) => {
   }
 });
 
+router.delete("/deleteaddFoodItem", authentication, async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { addFoodItemId } = req.body;
+    if (!addFoodItemId) {
+      res.status(400).json({
+        msg: "Not find id"
+      });
+    } else {
+      const user = req.getData;
+      if (!user) {
+        res.status(400).json({
+          msg: "user not found"
+        });
+      } else {
+        const entryField = user.addFoodItem.find(
+          (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+        );
+        if (!entryField) {
+          res.status(400).json({
+            msg: "invalid id"
+          });
+        } else {
+          // console.log(entryField);
+          user.addFoodItem = user.addFoodItem.filter(
+            (addFoodItem) => addFoodItem._id.toString() !== addFoodItemId
+          );
+
+          const updatedUser = await user.save();
+          res.status(201).json({
+            msg: "food delete successfully done",
+            status: 201,
+            data: updatedUser
+          });
+        }
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to delete",
+      error: error
+    });
+  }
+});
+
 module.exports = router;
