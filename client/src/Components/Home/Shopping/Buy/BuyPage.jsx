@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import apiURL from "../../../Config";
 
 const BuyPage = () => {
   const api = apiURL.url;
+  const history = useNavigate();
   const { addToCartId } = useParams();
   //   console.log(addToCartId);
   const [sendData, setSendData] = useState({
@@ -58,6 +59,27 @@ const BuyPage = () => {
 
   const productBuy = async () => {
     const { cname, cmobile, caddress } = sendData;
+    if (!cname || !cmobile || !caddress) {
+      alert("Enter all fields");
+    } else {
+      console.log("done");
+      const data = await fetch(`${api}/buyFood`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ sendData })
+      });
+      const res = await data.json();
+      console.log(res);
+      if (res.status === 208) {
+        console.log(res);
+        history("/shopping");
+        window.location.reload();
+      } else {
+        alert("Not Buy Food");
+      }
+    }
   };
 
   return (

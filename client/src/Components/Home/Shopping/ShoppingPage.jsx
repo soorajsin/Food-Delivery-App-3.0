@@ -26,9 +26,29 @@ const ShoppingPage = () => {
     }
   }, [api]);
 
+  const [buy, setBuy] = useState();
+  // console.log(buy);
+  const buyfetched = useCallback(async () => {
+    try {
+      const data = await fetch(`${api}/fetchedToBuy`, {
+        method: "GET"
+      });
+      const res = await data.json();
+      console.log(res);
+      if (res.status === 203) {
+        // console.log("buy", res);
+        setBuy(res);
+      } else {
+        console.log("Not fetched data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [api]);
+
   useEffect(() => {
     fetched();
-  }, [fetched]);
+  }, [fetched, buyfetched]);
 
   const deleteCart = async (addToCartId, index) => {
     try {
@@ -88,7 +108,19 @@ const ShoppingPage = () => {
           <div className="space">
             <h1>Welcome to Buy Food</h1>
           </div>
-          <div className="show"></div>
+          <div className="show">
+            {userData
+              ? userData.data[0].map((buyFood, index) => (
+                  <div key={index} className="showData">
+                    <img src={buyFood.fimg} alt="food img" />
+                    <h2>{buyFood.fname}</h2>
+                    <h3>{buyFood.fprice}</h3>
+                    <p>{buyFood.fdec}</p>
+                    <p>{buyFood.cname}</p>
+                  </div>
+                ))
+              : ""}
+          </div>
         </div>
       </div>
     </>

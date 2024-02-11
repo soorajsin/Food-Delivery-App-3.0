@@ -50,6 +50,17 @@ const userSchema = new mongoose.Schema({
       fprice: String,
       fdec: String
     }
+  ],
+  buyFood: [
+    {
+      fname: String,
+      fimg: String,
+      fprice: String,
+      fdec: String,
+      cname: String,
+      cmobile: String,
+      caddress: String
+    }
   ]
 });
 

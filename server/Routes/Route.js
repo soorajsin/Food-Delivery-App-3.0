@@ -379,4 +379,54 @@ router.delete("/deleteToCart", async (req, res) => {
   }
 });
 
+router.post("/buyFood", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { sendData } = req.body;
+    if (!sendData) {
+      res.status(400).json({
+        msg: "sendData not found"
+      });
+    } else {
+      const user = await userdb.findOne({});
+      if (!user) {
+        res.status(400).json({
+          msg: "user not found"
+        });
+      } else {
+        user.buyFood.push(sendData);
+        const updatedUser = await user.save();
+        // console.log(updatedUser);
+        res.status(201).json({
+          msg: "buyFood succesfully done",
+          status: 208,
+          data: updatedUser
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to buy"
+    });
+  }
+});
+
+router.get("/fetchedToBuy", async (req, res) => {
+  try {
+    const fetched = await userdb.find({});
+    const addFood = fetched.map((user) => user.buyFood);
+    console.log(addFood);
+    res.status(201).json({
+      msg: "fetched data",
+      status: 203,
+      data: addFood
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to fetched",
+      error: error
+    });
+  }
+});
+
 module.exports = router;
