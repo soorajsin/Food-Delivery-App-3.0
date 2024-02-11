@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./UpdatePage.css";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import apiURL from "../../Config";
 
 const UpdatePage = () => {
   const api = apiURL.url;
+  const histroy = useNavigate();
   const { addFoodItemId } = useParams();
-  console.log(addFoodItemId);
+  //   console.log(addFoodItemId);
 
   const [sendData, setSendData] = useState({
     fname: "",
@@ -18,7 +19,7 @@ const UpdatePage = () => {
   const changeData = (e) => {
     setSendData({
       ...sendData,
-      [e.target.name]: [e.target.value]
+      [e.target.name]: e.target.value
     });
   };
   console.log(sendData);
@@ -31,22 +32,58 @@ const UpdatePage = () => {
       const res = await data.json();
       // console.log(res);
       if (res.status === 202) {
-        console.log("update", res);
+        // console.log("update", res);
 
-        const updateFood = await res.data.find(
+        const updateFood = await res.data[0].find(
           (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
         );
+        // console.log("matched", updateFood);
+        if (updateFood) {
+          setSendData({
+            fname: updateFood.fname,
+            fimg: updateFood.fimg,
+            fprice: updateFood.fprice,
+            fdec: updateFood.fdec
+          });
+        } else {
+          console.log("not matched data");
+        }
       } else {
         console.log("Not fetched data");
       }
     } catch (error) {
       console.log(error);
     }
-  }, [api]);
+  }, [api, addFoodItemId]);
 
   useEffect(() => {
     fetched();
   }, [fetched]);
+
+  const updateFoodItem = async () => {
+    const { fname, fimg, fprice, fdec } = sendData;
+    if (!fname || !fimg || !fprice || !fdec) {
+      alert("Please Enter all fields");
+    } else {
+      console.log("update");
+      const data = await fetch(`${api}/updateFoodItem`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ sendData, addFoodItemId })
+      });
+      const res = await data.json();
+      //   console.log(res);
+      if (res.status === 205) {
+        console.log(res);
+        histroy("/management");
+        window.location.reload();
+      } else {
+        console.log("not update data");
+      }
+    }
+  };
 
   return (
     <>
@@ -97,11 +134,11 @@ const UpdatePage = () => {
             ></textarea>
           </div>
           <div className="form">
-            <button>Update</button>
+            <button onClick={updateFoodItem}>Update</button>
           </div>
           <div className="form">
             <p>
-              <NavLink>Cancel</NavLink>
+              <NavLink to={"/management"}>Cancel</NavLink>
             </p>
           </div>
         </div>

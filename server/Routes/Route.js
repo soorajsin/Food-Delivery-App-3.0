@@ -238,4 +238,46 @@ router.delete("/deleteaddFoodItem", async (req, res) => {
   }
 });
 
+router.put("/updateFoodItem", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { sendData, addFoodItemId } = req.body;
+    if (!sendData || !addFoodItemId) {
+      res.status(400).json({
+        msg: "plz fill all fields"
+      });
+    } else {
+      const user = await userdb.findOne({});
+      // console.log(user);
+      const index = await user.addFoodItem.findIndex(
+        (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+      );
+      if (index === -1) {
+        res.status(400).json({
+          msg: "Invalid index"
+        });
+      } else {
+        // console.log(index);
+        user.addFoodItem[index].fname = sendData.fname;
+        user.addFoodItem[index].fimg = sendData.fimg;
+        user.addFoodItem[index].fprice = sendData.fprice;
+        user.addFoodItem[index].fdec = sendData.fdec;
+
+        const updatedUser = await user.save();
+        // console.log(updatedUser);
+        res.status(201).json({
+          msg: "succesfully updated",
+          status: 205,
+          data: updatedUser
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Failed to update",
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
