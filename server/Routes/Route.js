@@ -199,41 +199,35 @@ router.get("/fetchedToAll", async (req, res) => {
   }
 });
 
-router.delete("/deleteaddFoodItem", authentication, async (req, res) => {
+router.delete("/deleteaddFoodItem", async (req, res) => {
   try {
     // console.log(req.body);
     const { addFoodItemId } = req.body;
     if (!addFoodItemId) {
       res.status(400).json({
-        msg: "Not find id"
+        msg: "not find id"
       });
     } else {
-      const user = req.getData;
-      if (!user) {
-        res.status(400).json({
-          msg: "user not found"
+      const user = await userdb.findOne({});
+      const index = user.addFoodItem.find(
+        (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+      );
+      if (index === -1) {
+        return res.status(404).json({
+          msg: "Food item not found"
         });
       } else {
-        const entryField = user.addFoodItem.find(
-          (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
-        );
-        if (!entryField) {
-          res.status(400).json({
-            msg: "invalid id"
-          });
-        } else {
-          // console.log(entryField);
-          user.addFoodItem = user.addFoodItem.filter(
-            (addFoodItem) => addFoodItem._id.toString() !== addFoodItemId
-          );
+        // Remove the found food item from the array
+        user.addFoodItem.splice(index, 1);
 
-          const updatedUser = await user.save();
-          res.status(201).json({
-            msg: "food delete successfully done",
-            status: 201,
-            data: updatedUser
-          });
-        }
+        // Save the updated user document
+        await user.save();
+
+        res.status(201).json({
+          msg: "Food item deleted successfully",
+          status: 204,
+          data: user
+        });
       }
     }
   } catch (error) {
