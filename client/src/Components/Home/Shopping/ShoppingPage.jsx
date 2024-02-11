@@ -46,10 +46,31 @@ const ShoppingPage = () => {
     }
   }, [api]);
 
+  const [reply, setReply] = useState();
+  // console.log(reply);
+  const replyFetched = useCallback(async () => {
+    try {
+      const data = await fetch(`${api}/replyfetched`, {
+        method: "GET"
+      });
+      const res = await data.json();
+      console.log(res);
+      if (res.status === 203) {
+        // console.log("buy", res);
+        setReply(res);
+      } else {
+        console.log("Not fetched data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [api]);
+
   useEffect(() => {
     fetched();
     buyfetched();
-  }, [fetched, buyfetched]);
+    replyFetched();
+  }, [fetched, buyfetched, replyFetched]);
 
   const deleteCart = async (addToCartId, index) => {
     try {
@@ -155,7 +176,28 @@ const ShoppingPage = () => {
               : ""}
           </div>
           <div className="space">
-            <h1>Welcome to Reply [Time & Date]</h1>
+            <h1>Welcome to Reply [Time ]</h1>
+          </div>
+          <div className="show">
+            {reply
+              ? reply.data[0].map((replyByManagement, index) => (
+                  <div key={index} className="showData">
+                    <img src={replyByManagement.fimg} alt="food img" />
+                    <h2>{replyByManagement.fname}</h2>
+                    <h3>{replyByManagement.fprice}</h3>
+                    <p>{replyByManagement.fdec}</p>
+                    <p>{replyByManagement.cname}</p>
+                    <p>{replyByManagement.cmobile}</p>
+                    <p>{replyByManagement.caddress}</p>
+                    <p>------------------------------</p>
+                    <p>{replyByManagement.dname}</p>
+                    <p>{replyByManagement.demail}</p>
+                    <p>{replyByManagement.dmobile}</p>
+                    <p>{replyByManagement.dtime}</p>
+                    <div className="actionCon"></div>
+                  </div>
+                ))
+              : ""}
           </div>
         </div>
       </div>
