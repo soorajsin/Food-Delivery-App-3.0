@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./AddFoodPage.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import apiURL from "../../Config";
 
 const AddFoodPage = () => {
   const api = apiURL.url;
+  const history = useNavigate();
   const [sendData, setSendData] = useState([
     {
       fname: "",
@@ -40,10 +41,17 @@ const AddFoodPage = () => {
             "Content-Type": "application/json",
             Authorization: token
           },
-          body: JSON.stringify({sendData})
+          body: JSON.stringify({ sendData })
         });
         const res = await data.json();
-        console.log(res);
+        // console.log(res);
+        if (res.status === 201) {
+          console.log(res);
+          history("/management");
+          window.location.reload();
+        } else {
+          alert("Failed to add food");
+        }
       } catch (error) {
         console.log(error);
       }

@@ -151,33 +151,50 @@ router.post("/addFoodItem", async (req, res) => {
   try {
     const { sendData } = req.body;
     if (!sendData) {
-      return res.status(400).json({
-        msg: "Please provide data for food item"
+      res.status(400).json({
+        msg: "plz fill add fields"
+      });
+    } else {
+      // console.log(sendData);
+      const fetched = await userdb.find({});
+      // console.log(fetched);
+      // Extract the addFoodItem array from each user document and push new data
+      const updatedUser = await Promise.all(
+        fetched.map(async (user) => {
+          user.addFoodItem.push(...sendData);
+          return await user.save();
+        })
+      );
+
+      // console.log(updatedUser);
+      res.status(201).json({
+        msg: "successfully food item added",
+        status: 201,
+        data: updatedUser.map((user) => user.addFoodItem)
       });
     }
+  } catch (error) {
+    res.status(400).json({
+      error: error,
+      msg: "failed to add Food"
+    });
+  }
+});
 
-    const addedItems = await Promise.all(
-      sendData.map(async (item) => {
-        const newFoodItem = new FoodItem({
-          fname: item.fname,
-          fimg: item.fimg,
-          fprice: item.fprice, // Assuming item.fprice is already a number
-          fdec: item.fdec
-        });
-        return await newFoodItem.save();
-      })
-    );
-
+router.get("/fetchedToAll", async (req, res) => {
+  try {
+    const fetched = await userdb.find({});
+    const addFood = fetched.map((user) => user.addFoodItem);
+    // console.log(addFood);
     res.status(201).json({
-      msg: "Added food successfully done",
-      status: 201,
-      data: addedItems
+      msg: "fetched data",
+      status: 202,
+      data: addFood
     });
   } catch (error) {
-    console.error("Error while adding food items:", error);
-    res.status(500).json({
-      msg: "Failed to add food",
-      error: error.message
+    res.status(400).json({
+      msg: "Failed to fetched",
+      error: error
     });
   }
 });

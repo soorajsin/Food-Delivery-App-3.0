@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     {
       fname: String,
       fimg: String,
-      fprice: Number,
+      fprice: String,
       fdec: String
     }
   ]

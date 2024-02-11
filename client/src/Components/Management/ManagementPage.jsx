@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import "./ManagementPage.css";
 import { useNavigate } from "react-router-dom";
+import apiURL from "../Config";
+import { useState } from "react";
 
 const ManagementPage = () => {
+  const api = apiURL.url;
   const history = useNavigate();
   const addFoodPage = () => {
     history("/add");
   };
+
+  const [userData, setUserData] = useState();
+  // console.log("user ", userData);
+  const fetched = useCallback(async () => {
+    try {
+      const data = await fetch(`${api}/fetchedToAll`, {
+        method: "GET"
+      });
+      const res = await data.json();
+      // console.log(res);
+      if (res.status === 202) {
+        // console.log(res);
+        setUserData(res);
+      } else {
+        console.log("Not fetched data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [api]);
+
+  useEffect(() => {
+    fetched();
+  }, [fetched]);
+
+
   return (
     <>
       <div className="management">
@@ -14,7 +43,24 @@ const ManagementPage = () => {
           <div className="add">
             <button onClick={addFoodPage}>ADD NEW FOOD</button>
           </div>
-          <div className="show">d</div>
+          <div className="show">
+            {userData
+              ? userData.data[0].map((addFoodItem, index) => (
+                  <div key={index} className="showData">
+                    <img src={addFoodItem.fimg} alt="food img" />
+                    <h2>{addFoodItem.fname}</h2>
+                    <h3>{addFoodItem.fprice}</h3>
+                    <p>{addFoodItem.fdec}</p>
+                    <div className="actionCon">
+                      <>
+                        <i className="fa-solid fa-delete-left"></i>
+                        <i className="fa-solid fa-pen-nib"></i>
+                      </>
+                    </div>
+                  </div>
+                ))
+              : ""}
+          </div>
         </div>
       </div>
     </>
