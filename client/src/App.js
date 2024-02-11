@@ -9,6 +9,7 @@ import TrackPage from "./Components/Management/Track/TrackPage";
 import AddFoodPage from "./Components/Management/ADD/AddFoodPage";
 import UpdatePage from "./Components/Management/Update/UpdatePage";
 import ShoppingPage from "./Components/Home/Shopping/ShoppingPage";
+import BuyPage from "./Components/Home/Shopping/Buy/BuyPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/add" element={<AddFoodPage />} />
           <Route path="/update/:addFoodItemId" element={<UpdatePage />} />
           <Route path="/shopping" element={<ShoppingPage />} />
+          <Route path="/buyFood/:addToCartId" element={<BuyPage />} />
         </Routes>
       </BrowserRouter>
     </>

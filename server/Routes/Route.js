@@ -280,7 +280,7 @@ router.put("/updateFoodItem", async (req, res) => {
   }
 });
 
-router.post("/addToCart", async (req, res) => {
+router.post("/addToCart", authentication, async (req, res) => {
   try {
     // console.log(req.body);
     const { addFoodItemId } = req.body;
@@ -289,25 +289,50 @@ router.post("/addToCart", async (req, res) => {
         msg: "addFoodItemId not found"
       });
     } else {
-      const user = await userdb.findOne({});
-      // console.log(user);
-      const index = user.addFoodItem.find(
-        (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
-      );
-      if (index === -1) {
+      const user = req.getData;
+      if (!user) {
         res.status(400).json({
-          msg: "index not found"
+          msg: "user not found"
         });
       } else {
-        // console.log(index);
-        user.addToCart.push(index);
-        const updatedUser = await user.save();
-        res.status(201).json({
-          msg: "succesfully add to cart",
-          status: 206,
-          data: updatedUser
-        });
+        const entryFields = user.addFoodItem.find(
+          (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+        );
+        if (!entryFields) {
+          res.status(400).json({
+            msg: "Invalid id"
+          });
+        } else {
+          user.addToCart.push(entryFields);
+
+          const updatedUser = await user.save();
+          res.status(201).json({
+            msg: "add to cart success",
+            status: 206,
+            data: updatedUser
+          });
+        }
       }
+
+      // const user = await userdb.findOne({});
+      // console.log(user);
+      // const index = user.addFoodItem.find(
+      //   (addFoodItem) => addFoodItem._id.toString() === addFoodItemId
+      // );
+      // if (index === -1) {
+      //   res.status(400).json({
+      //     msg: "index not found"
+      //   });
+      // } else {
+      //   // console.log(index);
+      //   user.addToCart.push(index);
+      //   const updatedUser = await user.save();
+      //   res.status(201).json({
+      //     msg: "succesfully add to cart",
+      //     status: 206,
+      //     data: updatedUser
+      //   });
+      // }
     }
   } catch (error) {
     res.status(400).json({
@@ -316,5 +341,49 @@ router.post("/addToCart", async (req, res) => {
     });
   }
 });
+
+router.delete("/deleteToCart", authentication, async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { addToCartId } = req.body;
+    if (!addToCartId) {
+      res.status(400).json({
+        msg: "not find addToCartId"
+      });
+    } else {
+      const user = req.getData;
+      if (!user) {
+        res.status(400).json({
+          msg: "user not found"
+        });
+      } else {
+        const entryFields = user.addToCart.find(
+          (addToCart) => addToCart._id.toString() === addToCartId
+        );
+        if (!entryFields) {
+          res.status(400).json({
+            msg: "entry not found"
+          });
+        } else {
+          user.addToCart = user.addToCart.filter(
+            (addToCart) => addToCart._id.toString() !== addToCartId
+          );
+          const updatedUser = await user.save();
+          res.status(201).json({
+            msg: "delete",
+            status: 207,
+            data: updatedUser
+          });
+        }
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      msg: "failed to delete"
+    });
+  }
+});
+
+
 
 module.exports = router;
