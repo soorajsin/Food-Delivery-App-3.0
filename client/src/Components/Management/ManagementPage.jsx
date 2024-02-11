@@ -59,6 +59,10 @@ const ManagementPage = () => {
     }
   };
 
+  const updateFood = async (addFoodItemId, index) => {
+    history(`/update/${addFoodItemId}`);
+  };
+
   return (
     <>
       <div className="management">
@@ -80,7 +84,10 @@ const ManagementPage = () => {
                           onClick={() => deleteFood(addFoodItem._id, index)}
                           className="fa-solid fa-delete-left"
                         ></i>
-                        <i className="fa-solid fa-pen-nib"></i>
+                        <i
+                          onClick={() => updateFood(addFoodItem._id, index)}
+                          className="fa-solid fa-pen-nib"
+                        ></i>
                       </>
                     </div>
                   </div>
